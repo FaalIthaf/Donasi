@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -10,10 +11,10 @@ public class WelcomePage extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel panelWelcomePage = new JPanel();
+        panelWelcomePage.setLayout(new BoxLayout(panelWelcomePage, BoxLayout.Y_AXIS));
 
-        panel.add(Box.createVerticalGlue());
+        panelWelcomePage.add(Box.createVerticalGlue());
 
         ImageIcon icon = new ImageIcon(getClass().getResource("logo.png"));
         BufferedImage bufferedImage = removeBackground(icon.getImage());
@@ -21,20 +22,31 @@ public class WelcomePage extends JFrame {
         ImageIcon scaledIcon = new ImageIcon(img);
         JLabel logoLabel = new JLabel(scaledIcon);
         logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(logoLabel);
+        panelWelcomePage.add(logoLabel);
 
-        panel.add(Box.createVerticalStrut(20));
+        panelWelcomePage.add(Box.createVerticalStrut(20));
 
         JLabel label = new JLabel("Human & Empathy", SwingConstants.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, 20));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(label);
+        panelWelcomePage.add(label);
 
-        panel.add(Box.createVerticalStrut(20));
+        panelWelcomePage.add(Box.createVerticalStrut(20));
 
-        panel.add(Box.createVerticalGlue());
+        JButton loginButton = new JButton("Berdonasi Sekarang");
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LoginPage().setVisible(true);
+                dispose(); // Close the welcome page
+            }
+        });
+        panelWelcomePage.add(loginButton);
 
-        setContentPane(panel);
+        panelWelcomePage.add(Box.createVerticalGlue());
+
+        setContentPane(panelWelcomePage);
     }
 
     private BufferedImage removeBackground(Image image) {
@@ -55,9 +67,6 @@ public class WelcomePage extends JFrame {
         return bufferedImage;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new WelcomePage().setVisible(true);
-        });
-    }
 }
+
+
