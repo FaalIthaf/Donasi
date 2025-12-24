@@ -110,7 +110,7 @@ public class LoginPage extends JFrame {
         usernamePanel.setBackground(Color.WHITE);
         usernamePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
-        JLabel userIcon = new JLabel("Username: ");
+        JLabel userIcon = new JLabel("Username");
         userIcon.setFont(new Font("Arial", Font.PLAIN, 16));
         userIcon.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         usernamePanel.add(userIcon, BorderLayout.WEST);
@@ -130,7 +130,7 @@ public class LoginPage extends JFrame {
         passwordPanel.setBackground(Color.WHITE);
         passwordPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
-        JLabel passIcon = new JLabel("Password: ");
+        JLabel passIcon = new JLabel("Password ");
         passIcon.setFont(new Font("Arial", Font.PLAIN, 16));
         passIcon.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         passwordPanel.add(passIcon, BorderLayout.WEST);
