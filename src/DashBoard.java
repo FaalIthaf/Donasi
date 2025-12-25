@@ -312,6 +312,7 @@ public class DashBoard extends JFrame {
     private ListDataPanel listDataPanel;
     private InputPanel inputPanel;
     private LaporanPanel laporanPanel;
+    private PaymentHistoryPanel paymentHistoryPanel;
     
     public DashBoard() {
         donasiList = FileHandler.loadData();
@@ -330,6 +331,7 @@ public class DashBoard extends JFrame {
         listDataPanel = new ListDataPanel(this);
         inputPanel = new InputPanel(this);
         laporanPanel = new LaporanPanel(this);
+        paymentHistoryPanel = new PaymentHistoryPanel(this);
         LoginPanel loginPanel = new LoginPanel(this);
 
         mainPanel.add(loginPanel, "Login");
@@ -338,6 +340,7 @@ public class DashBoard extends JFrame {
         mainPanel.add(listDataPanel, "ListData");
         mainPanel.add(inputPanel, "Input");
         mainPanel.add(laporanPanel, "Laporan");
+        mainPanel.add(paymentHistoryPanel, "PaymentHistory");
 
         add(mainPanel);
         // Start app at login screen
@@ -377,6 +380,8 @@ public class DashBoard extends JFrame {
             listDataPanel.refreshTable();
         } else if ("Laporan".equals(panelName)) {
             laporanPanel.refreshData();
+        } else if ("PaymentHistory".equals(panelName)) {
+            paymentHistoryPanel.refreshPaymentList();
         }
     }
     
@@ -551,6 +556,13 @@ class ListDataPanel extends JPanel {
         editBtn.setPreferredSize(new Dimension(100, 35));
         editBtn.addActionListener(e -> editSelectedDonasi());
         
+        RoundedButton paymentBtn = new RoundedButton("Bayar");
+        paymentBtn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        paymentBtn.setBackground(new Color(241, 196, 15));
+        paymentBtn.setForeground(new Color(44, 62, 80));
+        paymentBtn.setPreferredSize(new Dimension(100, 35));
+        paymentBtn.addActionListener(e -> processPayment());
+        
         RoundedButton deleteBtn = new RoundedButton("Hapus");
         deleteBtn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         deleteBtn.setBackground(new Color(231, 76, 60));
@@ -559,6 +571,7 @@ class ListDataPanel extends JPanel {
         deleteBtn.addActionListener(e -> deleteSelectedDonasi());
         
         buttonPanel.add(editBtn);
+        buttonPanel.add(paymentBtn);
         buttonPanel.add(deleteBtn);
         
         content.add(topPanel, BorderLayout.NORTH);
@@ -699,6 +712,135 @@ class ListDataPanel extends JPanel {
                 }
             }
         }
+    }
+    
+    private void processPayment() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih donasi yang ingin dibayar!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        String id = (String) tableModel.getValueAt(selectedRow, 0);
+        String status = (String) tableModel.getValueAt(selectedRow, 6);
+        
+        // Cek apakah sudah dibayar
+        if ("Sudah Dibayar".equals(status)) {
+            JOptionPane.showMessageDialog(this, "Donasi ini sudah dibayar!", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Cari donasi
+        Donasi donasi = null;
+        int donasiIndex = -1;
+        for (int i = 0; i < app.getDonasiList().size(); i++) {
+            if (app.getDonasiList().get(i).getId().equals(id)) {
+                donasi = app.getDonasiList().get(i);
+                donasiIndex = i;
+                break;
+            }
+        }
+        
+        if (donasi == null) return;
+        
+        final Donasi finalDonasi = donasi;
+        final int finalDonasiIndex = donasiIndex;
+        
+        // Buat dialog pembayaran
+        JDialog paymentDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
+            "Proses Pembayaran", true);
+        paymentDialog.setSize(500, 400);
+        paymentDialog.setLocationRelativeTo(null);
+        paymentDialog.setResizable(false);
+        
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(UIConstants.PANEL_BG);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel titleLabel = new JLabel("Proses Pembayaran Donasi");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(44, 62, 80));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(UIConstants.PANEL_BG);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        // Info Donasi
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        JLabel infoLabel = new JLabel("Informasi Donasi");
+        infoLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        contentPanel.add(infoLabel, gbc);
+        
+        gbc.gridwidth = 1;
+        gbc.gridy = 1; gbc.gridx = 0;
+        contentPanel.add(new JLabel("Nama Donatur:"), gbc);
+        gbc.gridx = 1;
+        contentPanel.add(new JLabel(finalDonasi.getNamaDonatur()), gbc);
+        
+        gbc.gridy = 2; gbc.gridx = 0;
+        contentPanel.add(new JLabel("Jumlah:"), gbc);
+        gbc.gridx = 1;
+        contentPanel.add(new JLabel("Rp " + String.format("%.0f", finalDonasi.getJumlah())), gbc);
+        
+        gbc.gridy = 3; gbc.gridx = 0;
+        contentPanel.add(new JLabel("Bank/Metode:"), gbc);
+        gbc.gridx = 1;
+        JComboBox<String> metodeBox = new JComboBox<>(new String[]{"Transfer Bank", "E-Wallet", "Kartu Kredit", "Cash"});
+        metodeBox.setSelectedItem(finalDonasi.getBank());
+        contentPanel.add(metodeBox, gbc);
+        
+        gbc.gridy = 4; gbc.gridx = 0; gbc.gridwidth = 2;
+        JLabel notaLabel = new JLabel("Catatan Pembayaran");
+        notaLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        contentPanel.add(notaLabel, gbc);
+        
+        gbc.gridy = 5; gbc.gridx = 0; gbc.gridwidth = 2;
+        JTextArea notaArea = new JTextArea(3, 30);
+        notaArea.setLineWrap(true);
+        notaArea.setWrapStyleWord(true);
+        JScrollPane notaScroll = new JScrollPane(notaArea);
+        contentPanel.add(notaScroll, gbc);
+        
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        buttonPanel.setOpaque(false);
+        
+        RoundedButton confirmBtn = new RoundedButton("Konfirmasi Pembayaran");
+        confirmBtn.setBackground(new Color(46, 204, 113));
+        confirmBtn.setForeground(Color.WHITE);
+        confirmBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        confirmBtn.addActionListener(e -> {
+            finalDonasi.setStatus("Sudah Dibayar");
+            finalDonasi.setBank((String) metodeBox.getSelectedItem());
+            app.updateDonasi(finalDonasiIndex, finalDonasi);
+            refreshTable();
+            
+            JOptionPane.showMessageDialog(paymentDialog,
+                "Pembayaran berhasil dikonfirmasi!\n" +
+                "Nominal: Rp " + String.format("%.0f", finalDonasi.getJumlah()) + "\n" +
+                "Metode: " + metodeBox.getSelectedItem() + "\n" +
+                "Status: Sudah Dibayar",
+                "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            paymentDialog.dispose();
+        });
+        
+        RoundedButton cancelBtn = new RoundedButton("Batalkan");
+        cancelBtn.setBackground(new Color(231, 76, 60));
+        cancelBtn.setForeground(Color.WHITE);
+        cancelBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        cancelBtn.addActionListener(e -> paymentDialog.dispose());
+        
+        buttonPanel.add(confirmBtn);
+        buttonPanel.add(cancelBtn);
+        
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+        paymentDialog.add(mainPanel);
+        paymentDialog.setVisible(true);
     }
 }
 

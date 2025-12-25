@@ -105,11 +105,10 @@ public class AdminDashboardPanel extends JPanel {
     }
     
     private JPanel createMenuButtons() {
-        JPanel menuPanel = new JPanel(new GridLayout(2, 2, 20, 20));
+        JPanel menuPanel = new JPanel(new GridLayout(1, 3, 20, 20));
         menuPanel.setOpaque(false);
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
         
-        menuPanel.add(createMenuButton("Input Donasi", new Color(52, 152, 219), "Input"));
         menuPanel.add(createMenuButton("List Data", new Color(46, 204, 113), "ListData"));
         menuPanel.add(createMenuButton("Laporan", new Color(155, 89, 182), "Laporan"));
         menuPanel.add(createMenuButton("Keluar", new Color(231, 76, 60), null));
