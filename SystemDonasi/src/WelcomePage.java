@@ -13,8 +13,7 @@ public class WelcomePage extends JFrame {
 
         JPanel panelWelcomePage = new JPanel();
         panelWelcomePage.setLayout(new BoxLayout(panelWelcomePage, BoxLayout.Y_AXIS));
-        // Warm background color suitable for donation theme
-        panelWelcomePage.setBackground(new Color(255, 248, 220)); // Light cream/warm background
+        panelWelcomePage.setBackground(new Color(255, 248, 220)); 
 
         panelWelcomePage.add(Box.createVerticalGlue());
 
@@ -31,16 +30,15 @@ public class WelcomePage extends JFrame {
         JLabel label = new JLabel("Human & Empathy", SwingConstants.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, 28));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setForeground(new Color(139, 69, 19)); // Brown color for warmth and trust
+        label.setForeground(new Color(139, 69, 19)); 
         panelWelcomePage.add(label);
 
         panelWelcomePage.add(Box.createVerticalStrut(10));
 
-        // Add subtitle for donation theme
         JLabel subtitleLabel = new JLabel("Sedikit dari kita, besar bagi mereka", SwingConstants.CENTER);
         subtitleLabel.setFont(new Font("Arial", Font.ITALIC, 16));
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        subtitleLabel.setForeground(new Color(102, 51, 0)); // Dark brown
+        subtitleLabel.setForeground(new Color(102, 51, 0)); 
         panelWelcomePage.add(subtitleLabel);
 
         panelWelcomePage.add(Box.createVerticalStrut(30));
@@ -48,27 +46,26 @@ public class WelcomePage extends JFrame {
         JButton loginButton = new JButton("Berdonasi Sekarang");
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.setFont(new Font("Arial", Font.BOLD, 18));
-        loginButton.setBackground(new Color(34, 139, 34)); // Forest green for trust and nature
+        loginButton.setBackground(new Color(34, 139, 34)); 
         loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
         loginButton.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // Add hover effect
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                loginButton.setBackground(new Color(0, 100, 0)); // Darker green on hover
+                loginButton.setBackground(new Color(0, 100, 0)); 
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                loginButton.setBackground(new Color(34, 139, 34)); // Back to original green
+                loginButton.setBackground(new Color(34, 139, 34)); 
             }
         });
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new LoginPage().setVisible(true);
-                dispose(); // Close the welcome page
+                dispose(); 
             }
         });
         panelWelcomePage.add(loginButton);
@@ -97,5 +94,4 @@ public class WelcomePage extends JFrame {
     }
 
 }
-
 

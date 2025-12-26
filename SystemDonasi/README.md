@@ -1,18 +1,49 @@
-## Getting Started
+# System Donation
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+System Donation adalah aplikasi desktop berbasis **Java Swing** yang dirancang untuk mengelola sistem donasi secara digital. Aplikasi ini memungkinkan donatur untuk memberikan donasi ke berbagai kategori seperti **pendidikan, kesehatan, bencana alam, dan kemanusiaan**, serta menyediakan fitur manajemen lengkap untuk **admin** dalam memantau dan mengelola data donasi.
 
-## Folder Structure
+Aplikasi ini dibuat sebagai **tugas akhir mata kuliah Pemrograman Lanjut**, dengan fokus pada antarmuka pengguna (GUI) yang user-friendly dan pengelolaan data yang efisien.
 
-The workspace contains two folders by default, where:
+---
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## 🎯 Fitur Utama
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+### 👤 Fitur Donatur
+- Form donasi (kategori, nominal, metode pembayaran, pesan)
+- Riwayat donasi
+- Konfirmasi pembayaran donasi
+- Edit data donasi
+- Hapus donasi
+- Laporan dan statistik donasi pribadi
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### 🛠️ Fitur Admin
+- Dashboard admin
+- Manajemen seluruh data donasi
+- Laporan dan statistik donasi
+- Export laporan ke file `.txt`
+- Pemantauan status pembayaran donasi
 
-## Dependency Management
+### ⚙️ Fitur Umum
+- Sistem login admin dan donatur
+- Validasi input data
+- Penyimpanan data menggunakan file CSV
+- UI modern (rounded component)
+- Responsif pada berbagai ukuran layar
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+---
+
+## 🖥️ Persyaratan Sistem
+
+- Java Development Kit (JDK) 8 atau lebih tinggi  
+- Sistem Operasi: Windows / macOS / Linux  
+- RAM minimal 512 MB  
+- Penyimpanan minimal 50 MB  
+
+---
+
+## 📦 Instalasi
+
+### 1. Clone atau Download Proyek
+```bash
+git clone https://github.com/FaalIthaf/Donasi.git
+cd system-donation
