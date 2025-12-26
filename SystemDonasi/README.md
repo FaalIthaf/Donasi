@@ -46,4 +46,4 @@ Aplikasi ini dibuat sebagai **tugas akhir mata kuliah Pemrograman Lanjut**, deng
 ### 1. Clone atau Download Proyek
 ```bash
 git clone https://github.com/FaalIthaf/Donasi.git
-cd system-donation
+cd Donasi

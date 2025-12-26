@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 
-// ========== CUSTOM COMPONENTS ==========
 class RoundedButton extends JButton {
     private int radius = 20;
     
@@ -74,7 +73,6 @@ class RoundedPanel extends JPanel {
     }
 }
 
-// ========== UI CONSTANTS ==========
 class UIConstants {
     public static final Color PRIMARY = new Color(52, 73, 94);
     public static final Color SUCCESS = new Color(31, 58, 95);
@@ -95,7 +93,6 @@ class UIConstants {
     }
 }
 
-// ========== TABLE RENDERER ==========
 class ZebraTableCellRenderer extends DefaultTableCellRenderer {
     private Color even = Color.WHITE;
     private Color odd = new Color(250, 250, 250);
@@ -115,7 +112,6 @@ class ZebraTableCellRenderer extends DefaultTableCellRenderer {
     }
 }
 
-// ========== MODEL CLASSES ==========
 class Donasi {
     private String id;
     private String namaDonatur;
@@ -125,7 +121,7 @@ class Donasi {
     private LocalDate tanggal;
     private String pesan;
     private String bank;
-    private String status; // "Belum Dibayar" atau "Sudah Dibayar"
+    private String status; 
     
     public Donasi(String id, String namaDonatur, String email, String kategori, 
                   double jumlah, LocalDate tanggal, String pesan, String bank) {
@@ -137,7 +133,7 @@ class Donasi {
         this.tanggal = tanggal;
         this.pesan = pesan;
         this.bank = bank;
-        this.status = "Belum Dibayar"; // Default status
+        this.status = "Belum Dibayar"; 
     }
     
     public String getId() { return id; }
@@ -179,7 +175,6 @@ class Donasi {
     }
 }
 
-// ========== FILE HANDLER ==========
 class FileHandler {
     private static final String FILE_NAME = "donasi_data.csv";
     
@@ -216,7 +211,6 @@ class FileHandler {
     }
 }
 
-// ========== MAIN APPLICATION ==========
 public class DashBoard extends JFrame {
     public CardLayout cardLayout;
     public JPanel mainPanel;
@@ -234,7 +228,7 @@ public class DashBoard extends JFrame {
     public DashBoard() {
         donasiList = FileHandler.loadData();
 
-        // Tambahkan data sample menggunakan string agar tidak seperti app fresh
+
         if (donasiList.size() < 20) {
             String[] sampleData = {
                 "DN1766705000001,Farrel, Farrel@gmail.com,Pendidikan,500000.0,2024-10-15,Bantuan pendidikan anak yatim,Transfer Bank,Sudah Dibayar",
@@ -245,7 +239,7 @@ public class DashBoard extends JFrame {
             try {
                 FileHandler.saveData(donasiList);
             } catch (IOException e) {
-                // Ignore error saat menyimpan sample data
+        
             }
         }
 
@@ -257,14 +251,12 @@ public class DashBoard extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         
-        // Initialize panels
         adminDashboardPanel = new AdminDashboardPanel(this);
         donorDashboardPanel = new DonorDashboardPanel(this);
         listDataPanel = new ListDataPanel(this);
         inputPanel = new InputPanel(this);
         laporanPanel = new LaporanPanel(this);
         paymentHistoryPanel = new PaymentHistoryPanel(this);
-        // LoginPanel removed as login is handled externally
 
 
         mainPanel.add(adminDashboardPanel, "AdminDashboard");
@@ -275,7 +267,6 @@ public class DashBoard extends JFrame {
         mainPanel.add(paymentHistoryPanel, "PaymentHistory");
 
         add(mainPanel);
-        // Start app at donor dashboard (login handled externally)
         cardLayout.show(mainPanel, "DonorDashboard");
         
         addWindowListener(new WindowAdapter() {
@@ -299,7 +290,6 @@ public class DashBoard extends JFrame {
     }
     
     public void logout() {
-        // Reset current user and show login page
         this.currentUserId = "";
         this.currentUserRole = "";
         new LoginPage().setVisible(true);
@@ -363,26 +353,7 @@ public class DashBoard extends JFrame {
         return "DN" + System.currentTimeMillis();
     }
     
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // Apply global UI constants
-        UIConstants.applyGlobal();
-
-        SwingUtilities.invokeLater(() -> {
-            DashBoard app = new DashBoard();
-            app.setVisible(true);
-        });
-    }
 }
-
-// ========== LOGIN PANEL ==========
-// Admin and Donor dashboard panels moved to their own files for clarity.
-
-// ========== LIST DATA PANEL ==========
 class ListDataPanel extends JPanel {
     private DashBoard app;
     private JTable table;
@@ -466,7 +437,7 @@ class ListDataPanel extends JPanel {
         };
         
         table = new JTable(tableModel);
-        // Improve table readability with zebra renderer and prevent column reordering
+
         table.setDefaultRenderer(Object.class, new ZebraTableCellRenderer());
         table.getTableHeader().setReorderingAllowed(false);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -518,15 +489,12 @@ class ListDataPanel extends JPanel {
         tableModel.setRowCount(0);
         List<Donasi> list = app.getDonasiList();
         
-        // Filter berdasarkan role: donatur hanya melihat donasi mereka sendiri
         for (Donasi d : list) {
             if ("donor".equals(app.currentUserRole)) {
-                // Donatur hanya lihat donasi mereka (match dengan currentUserId yang merupakan nama donatur)
                 if (!d.getNamaDonatur().equals(app.currentUserId)) {
                     continue;
                 }
             }
-            // Admin melihat semua donasi
             
             tableModel.addRow(new Object[]{
                 d.getId(),
@@ -547,15 +515,12 @@ class ListDataPanel extends JPanel {
         tableModel.setRowCount(0);
         
         for (Donasi d : app.getDonasiList()) {
-            // Filter berdasarkan role: donatur hanya melihat donasi mereka sendiri
+
             if ("donor".equals(app.currentUserRole)) {
                 if (!d.getNamaDonatur().equals(app.currentUserId)) {
                     continue;
                 }
             }
-            // Admin melihat semua donasi
-            
-            // Terapkan filter keyword
             if (d.getNamaDonatur().toLowerCase().contains(keyword) ||
                 d.getEmail().toLowerCase().contains(keyword) ||
                 d.getKategori().toLowerCase().contains(keyword) ||
@@ -595,7 +560,6 @@ class ListDataPanel extends JPanel {
         
         if (donasi == null) return;
         
-        // Validasi: donatur hanya bisa edit donasi mereka sendiri
         if ("donor".equals(app.currentUserRole) && !donasi.getNamaDonatur().equals(app.currentUserId)) {
             JOptionPane.showMessageDialog(this, "Anda hanya dapat mengedit donasi Anda sendiri!", "Akses Ditolak", JOptionPane.ERROR_MESSAGE);
             return;
@@ -619,7 +583,6 @@ class ListDataPanel extends JPanel {
         
         String id = (String) tableModel.getValueAt(selectedRow, 0);
         
-        // Validasi: donatur hanya bisa delete donasi mereka sendiri
         Donasi selectedDonasi = null;
         for (Donasi d : app.getDonasiList()) {
             if (d.getId().equals(id)) {
@@ -656,14 +619,12 @@ class ListDataPanel extends JPanel {
         
         String id = (String) tableModel.getValueAt(selectedRow, 0);
         String status = (String) tableModel.getValueAt(selectedRow, 6);
-        
-        // Cek apakah sudah dibayar
+
         if ("Sudah Dibayar".equals(status)) {
             JOptionPane.showMessageDialog(this, "Donasi ini sudah dibayar!", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
-        // Cari donasi
+
         Donasi donasi = null;
         int donasiIndex = -1;
         for (int i = 0; i < app.getDonasiList().size(); i++) {
@@ -678,8 +639,7 @@ class ListDataPanel extends JPanel {
         
         final Donasi finalDonasi = donasi;
         final int finalDonasiIndex = donasiIndex;
-        
-        // Buat dialog pembayaran
+
         JDialog paymentDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
             "Proses Pembayaran", true);
         paymentDialog.setSize(500, 400);
@@ -700,8 +660,7 @@ class ListDataPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        
-        // Info Donasi
+
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         JLabel infoLabel = new JLabel("Informasi Donasi");
         infoLabel.setFont(new Font("Times New Roman", Font.BOLD, 14));
@@ -777,7 +736,6 @@ class ListDataPanel extends JPanel {
     }
 }
 
-// ========== INPUT PANEL ==========
 class InputPanel extends JPanel {
     private DashBoard app;
     private JTextField namaField, emailField, jumlahField;
@@ -1002,7 +960,6 @@ class InputPanel extends JPanel {
                 return;
             }
             
-            // Step 1: Verification dialog with donation preview
             String preview = "VERIFIKASI DATA DONASI (LANGKAH 2)\n\n" +
                 "Nama: " + nama + "\n" +
                 "Email: " + email + "\n" +
@@ -1016,22 +973,18 @@ class InputPanel extends JPanel {
                 "Konfirmasi Donasi (Langkah 2)", JOptionPane.OK_CANCEL_OPTION);
             
             if (confirm != JOptionPane.OK_OPTION) {
-                return; // User cancelled the donation
+                return; 
             }
             
-            // Step 2: Process the donation
             String id = app.generateId();
             Donasi donasi = new Donasi(id, nama, email, kategori, 
                                       jumlah, LocalDate.now(), pesan, bank);
             app.addDonasi(donasi);
 
-            // Pastikan donasi yang baru masuk muncul di riwayat donor saat ini
-            // Jika tidak ada halaman login, set currentUserId ke nama yang baru saja dikirim
             if (!"admin".equals(app.currentUserRole)) {
                 app.currentUserId = nama;
                 app.currentUserRole = "donor";
             }
-            // Refresh list dan laporan agar data terbaru langsung terlihat
             app.refreshListData();
             app.refreshLaporan();
             
@@ -1065,7 +1018,6 @@ class InputPanel extends JPanel {
     }
 }
 
-// ========== LAPORAN PANEL ==========
 class LaporanPanel extends JPanel {
     private DashBoard app;
     private JLabel totalDonasiLabel, totalDonaturLabel, totalNominalLabel;
@@ -1117,7 +1069,6 @@ class LaporanPanel extends JPanel {
         statsPanel.add(createStatCard("Total Donatur", "0", new Color(46, 204, 113)));
         statsPanel.add(createStatCard("Total Nominal", "Rp 0", new Color(231, 76, 60)));
 
-        // Wrapper panel to include stats and an export button on the right
         JPanel topNorth = new JPanel(new BorderLayout());
         topNorth.setOpaque(false);
         topNorth.add(statsPanel, BorderLayout.CENTER);
@@ -1195,7 +1146,6 @@ class LaporanPanel extends JPanel {
     public void refreshData() {
         List<Donasi> list = app.getDonasiList();
 
-        // Jika yang melihat adalah donatur, filter hanya donasi milik mereka
         if ("donor".equals(app.currentUserRole) && app.currentUserId != null && !app.currentUserId.isEmpty()) {
             List<Donasi> filtered = new ArrayList<>();
             for (Donasi d : list) {
